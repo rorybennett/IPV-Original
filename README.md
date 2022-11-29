@@ -1,6 +1,6 @@
-=======================================================================================================================
-Python Scripts
-=======================================================================================================================
+
+### Python Scripts
+
 CreateMap: This may create a map using an already trained classifier. Can be run.
 
 DataCreator: Creates a certain number of folds (10 by default) with training, testing, and validation sets.
