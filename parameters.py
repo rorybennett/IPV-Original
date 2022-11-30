@@ -47,6 +47,7 @@ data_path = f'../Code_Data/{num_of_folds}FOLDS/{scan_type.upper()}/' \
 train_path = f'../Code_Data/{num_of_folds}FOLDS/{scan_type.upper()}/' \
              f'doctor_{sub_patch_scales}_{patches_per_sample}persample'
 batch_size = 8
+training_epochs = 15
 # Learning rate, default was 0.01.
 lr = 0.1
 lr_schedule = True

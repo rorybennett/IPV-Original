@@ -39,7 +39,7 @@ def train_a_model():
         val_accuracies = []
         loss_prints = []
         val_acc_check = [0.0, 0.0]
-        for epoch in range(15):
+        for epoch in range(pms.training_epochs):
             if val_acc_check[1] < val_acc_check[0]:
                 if pms.lr_schedule: scheduler.step()
             val_acc_check[0] = val_acc_check[1]
@@ -118,9 +118,9 @@ def train_a_model():
                         if running_loss < 0.01:
                             fin = 1
                     val_acc_check[1] = val_accuracy
-                    print(
-                        '[epoch: %d, data_num: %5d] train_loss: %f, train_accuracy: %f, val_loss: %f, val_accuracy: %f' %
-                        (epoch + 1, batch_count * pms.batch_size, running_loss, train_accuracy, val_loss, val_accuracy))
+                    print(f'[epoch: {epoch + 1}/{pms.training_epochs}, data_num: {batch_count * pms.batch_size:4f}] '
+                          f'train_loss: {running_loss}, train_accuracy: {train_accuracy}, val_loss: {val_loss}, '
+                          f'val_accuracy: {val_accuracy}')
                     log_csv_writer.writerow(
                         [str(optimizer.param_groups[0]['lr']), str(epoch + 1), str(batch_count * pms.batch_size),
                          str(running_loss), str(train_accuracy), str(val_loss), str(val_accuracy)])
