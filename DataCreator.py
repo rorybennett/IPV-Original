@@ -22,22 +22,31 @@ class PatchCreator:
 
     def create(self, x, y):
 
-        subPatches = []
+        sub_patches = []
         for scale in self.sub_patch_scales:
             sub_patch = createPatch(self.image, x, y, scale)
-            subPatches.append(sub_patch)
+            sub_patches.append(sub_patch)
 
-        arrPatches = []
+        arr_patches = []
         for i in range(4):
-            arrPatches.append(resize(subPatches[i], (self.patch_size, self.patch_size), preserve_range=True))
+            arr_patches.append(resize(sub_patches[i], (self.patch_size, self.patch_size), preserve_range=True))
 
-        return arrPatches
+        return arr_patches
 
 
 class DataCreator:
 
     def __init__(self, distance_intervals, angle_intervals, folds, subpatch_scales):
 
+        self.current_fold = None
+        self.patch_count = None
+        self.pc = None
+        self.labels_count = None
+        self.current_sample_name = None
+        self.show_image = None
+        self.name_count = None
+        self.csv_files = None
+        self.save_path = None
         self.sub_patch_scales = subpatch_scales
         self.patch_size = subpatch_scales[0] * 2
         self.folds = folds
@@ -49,7 +58,7 @@ class DataCreator:
         self.pix_to_cm_vals_dict = {}
 
     # Create lists of names for each fold to self.fold_list
-    def readFoldLists(self):
+    def read_fold_lists(self):
         for i in range(1, pms.num_of_folds + 1):
             train_list = []
             test_list = []
@@ -73,15 +82,15 @@ class DataCreator:
         print("Folds read.")
 
     # Read points and paths of a given names list to self.points and self.paths
-    def readPoints(self, phase):
+    def read_points(self, phase):
         if phase == "Train":
-            namesList = self.fold_list[self.current_fold - 1][0]
+            names_list = self.fold_list[self.current_fold - 1][0]
         elif phase == "Test":
-            namesList = self.fold_list[self.current_fold - 1][1]
+            names_list = self.fold_list[self.current_fold - 1][1]
         elif phase == "Val":
-            namesList = self.fold_list[self.current_fold - 1][2]
+            names_list = self.fold_list[self.current_fold - 1][2]
         else:
-            namesList = []
+            names_list = []
         self.points_dict = {}
         self.paths_dict = {}
         all_paths_dict = {}
@@ -92,19 +101,19 @@ class DataCreator:
             name = path[0:path.find(".")]
             all_paths_dict[name] = path
             lines_dict[name] = ml
-        for listname in namesList:
-            print(all_paths_dict[listname])
-            self.paths_dict[listname] = pms.resampled_data_path + '/' + all_paths_dict[listname]
+        for list_name in names_list:
+            print(all_paths_dict[list_name])
+            self.paths_dict[list_name] = pms.resampled_data_path + '/' + all_paths_dict[list_name]
             pt = []
-            num = lines_dict[listname]
+            num = lines_dict[list_name]
             for i in range(pms.num_of_pts):
                 num = num[num.find(" (") + 1:len(num)]
                 p = (int(num[1:num.find(",")]), int(num[num.find(" ") + 1:num.find(")")]))
                 pt.append(p)
             print(pt)
-            self.points_dict[listname] = pt
+            self.points_dict[list_name] = pt
 
-    def createCSV(self, phase):
+    def create_csv(self, phase):
         csvfile1 = open(pms.data_path + "/" + phase + "_f" + str(self.current_fold) + ".csv", 'w')
         data_file = csv.writer(csvfile1)
         return [data_file]
@@ -144,14 +153,14 @@ class DataCreator:
         # io.show()
 
     # Create and save patches with labels
-    def createData(self, step, phase):
-        self.readPoints(phase)
+    def create_data(self, step, phase):
+        self.read_points(phase)
         self.save_path = pms.data_path + "/" + phase + "_f" + str(self.current_fold)
         if not os.path.exists(self.save_path):
             os.makedirs(self.save_path)
         if not os.path.exists(pms.data_path + "/" + phase + "_images/"):
             os.makedirs(pms.data_path + "/" + phase + "_images/")
-        self.csv_files = self.createCSV(phase)
+        self.csv_files = self.create_csv(phase)
         # self.read_cm_to_pix_vals()
 
         # create patches with labels
@@ -216,14 +225,14 @@ class DataCreator:
     def create(self, step, phase, current_fold):
         self.current_fold = current_fold
         if not self.fold_list:
-            self.readFoldLists()
+            self.read_fold_lists()
         if phase == 'both':
-            self.createData(step, "Train")
+            self.create_data(step, "Train")
             if self.current_fold == 1:
-                self.createData(step, "Val")
-            self.createData(step, "Test")
+                self.create_data(step, "Val")
+            self.create_data(step, "Test")
         else:
-            self.createData(step, phase)
+            self.create_data(step, phase)
 
 
 # -------------------------------------------------------------------------------------------------------------------

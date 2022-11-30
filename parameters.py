@@ -28,7 +28,7 @@ resampled_data_path = f"../DATA/RESAMPLED_{scan_type.upper()}_MID"
 sub_patches = True
 sub_patch_scales = [64, 128, 256, 512]
 phase = "both"
-patches_per_sample = 50
+patches_per_sample = 20
 test_data_step = 10
 tasks_classes = [
     [(0, 15), (15, 25), (25, 40), (40, 60), (60, 85), (85, 115), (115, 150), (150, 190), (190, 235), (235, 285),
@@ -44,10 +44,11 @@ data_path = f'../Code_Data/{num_of_folds}FOLDS/{scan_type.upper()}/' \
 # ======================================================================================================================
 # Train
 # ======================================================================================================================
-train_path = f'../Code_Data/{num_of_folds}FOLDS/{scan_type.upper()}/" \
-             f"doctor_{sub_patch_scales}_{patches_per_sample}persample'
+train_path = f'../Code_Data/{num_of_folds}FOLDS/{scan_type.upper()}/' \
+             f'doctor_{sub_patch_scales}_{patches_per_sample}persample'
 batch_size = 8
-lr = 0.01
+# Learning rate, default was 0.01.
+lr = 0.1
 lr_schedule = True
 train_network = "resnet18_pt"
 loss_print = 1600 // batch_size

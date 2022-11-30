@@ -1,3 +1,7 @@
+"""
+Had to change the labels from Tensor to LongTensor for some reason.
+"""
+
 import numpy as np
 import pandas as pd
 import torch
@@ -54,7 +58,7 @@ class ToTensor(object):
         return {'image': torch.from_numpy(image),
                 'sample_name': sample_name,
                 'coordinates': coords,
-                'labels': torch.tensor(label)}
+                'labels': torch.LongTensor(label)}
 
 # ----------------------------------------------------------------------------------------------------------------------
 # Test Code ------------------------------------------------------------------------------------------------------------
